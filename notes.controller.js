@@ -29,13 +29,27 @@ const addNote = async (title) => {
 
 const printNotes = async () => {
     const notes = await getNotes();
-    console.log(chalk.bgMagenta('List of notes'));
+    console.log(chalk.magenta('  ID      TITLE   '));
+    console.log(chalk.magenta('------ -----------'));
     notes.forEach((note) => {
-        console.log(chalk.magenta(note.title));
+        console.log(chalk.magenta(note.id), chalk.magenta(note.title));
     });
+};
+
+const removeNote = async (id) => {
+    const notes = await getNotes();
+    const isNoteFound = notes.filter((note) => note.id === id);
+    if (isNoteFound.length !== 0) {
+        const newNotes = notes.filter((note) => note.id !== id);
+        await fs.writeFile(notesPath, JSON.stringify(newNotes));
+        console.log(chalk.bgGreen('Note removed'));
+    } else {
+        console.log(chalk.bgRed(`Note with ID ${id} not found`));
+    }
 };
 
 module.exports = {
     addNote,
-    printNotes
+    printNotes,
+    removeNote
 };
