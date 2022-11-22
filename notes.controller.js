@@ -50,6 +50,6 @@ const removeNote = async (id) => {
 
 module.exports = {
     addNote,
-    printNotes,
+    getNotes,
     removeNote
 };
