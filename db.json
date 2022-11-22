@@ -1,1 +1,5 @@
-[{"title":"Hello, world!","id":"cf68a0"},{"title":"A new note!","id":"fa30b5"},{"title":"It's snowing today","id":"b707a6"}]
+[
+    { "title": "Hello, world!", "id": "cf68a0" },
+    { "title": "A new note!", "id": "fa30b5" },
+    { "title": "It's a cold weather today", "id": "b707a6" }
+]
