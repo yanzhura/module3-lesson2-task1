@@ -1,4 +1,4 @@
-const savedNotes = [];
+let savedNotes = [];
 
 document.addEventListener('click', (event) => {
     if (event.target.dataset.type === 'remove') {
@@ -8,16 +8,16 @@ document.addEventListener('click', (event) => {
         });
     } else if (event.target.dataset.type === 'edit') {
         const id = event.target.dataset.id;
-        listItemElement = event.target.closest('li');
-        const listItemNode = listItemElement.childNodes[0];
-        console.log('listItemNode', listItemNode.innerText);
-        listItemElement.innerHTML = getEditForm(id);
+        const listItemElement = event.target.closest('li');
+        const title = listItemElement.childNodes[0].nodeValue.trim();
+        listItemElement.innerHTML = getEditForm(id, title);
+        savedNotes.push({ id, title });
     } else if (event.target.dataset.type === 'submit') {
         const id = event.target.dataset.id;
-        listItemElement = event.target.closest('li');
+        const listItemElement = event.target.closest('li');
         const inputElement = document.querySelector(`input[data-id="${id}"]`);
         const title = inputElement.value;
-        if (newTitle) {
+        if (title) {
             const newNote = {
                 id,
                 title
@@ -28,13 +28,16 @@ document.addEventListener('click', (event) => {
         }
     } else if (event.target.dataset.type === 'cancel') {
         const id = event.target.dataset.id;
-        console.log('id :>> ', id);
+        const note = savedNotes.find((item) => item.id === id);
+        savedNotes = savedNotes.filter((item) => item.id !== id);
+        const listItemElement = event.target.closest('li');
+        listItemElement.innerHTML = getNoteElement(note);
     }
 });
 
-const getEditForm = (id) =>
+const getEditForm = (id, title) =>
     `
-<input type="text" id="title" data-id="${id}"/>
+<input type="text" id="title" data-id="${id}" value="${title}"/>
 <div>
     <button class="btn btn-success" data-type="submit" data-id="${id}">Save</button>
     <button class="btn btn-danger" data-type="cancel" data-id="${id}">Cancel</button>
@@ -45,7 +48,7 @@ const getNoteElement = ({ id, title }) =>
 ${title}
 <div class="buttons">
     <button class="btn btn-primary" data-type="edit" data-id="${id}">
-        Update
+        Edit
     </button>
     <button class="btn btn-danger" data-type="remove" data-id="${id}">
         &times;
@@ -64,19 +67,3 @@ const update = async (payload) => {
         method: 'PUT'
     });
 };
-
-//! Оставлено для примера
-const oldEdit = (params) => {
-    const newTitle = prompt('Введите новое название');
-    if (newTitle) {
-        const newNote = {
-            id: event.target.dataset.id,
-            title: newTitle
-        };
-        update(newNote).then(() => {
-            const node = event.target.closest('li').childNodes[0];
-            node.nodeValue = newTitle;
-        });
-    }
-};
-//! Оставлено для примера
